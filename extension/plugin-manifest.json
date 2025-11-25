@@ -1,0 +1,41 @@
+{
+    "manifest_version": 1,
+    "platform_version": "1.0",
+    "version": "1.0.0",
+    "app": {
+        "unique_name": "notion_integration",
+        "name": "Notion Integration",
+        "description": "Integrate Notion tasks and docs into Zoho Cliq",
+        "logo": "resources/logo.png"
+    },
+    "components": [
+        {
+            "type": "bot",
+            "unique_name": "notion_bot",
+            "name": "Notion Bot",
+            "description": "Your Notion assistant in Cliq",
+            "handlers": {
+                "message_handler": true,
+                "context_handler": true,
+                "mention_handler": true
+            }
+        },
+        {
+            "type": "slash_command",
+            "unique_name": "notion",
+            "name": "notion",
+            "description": "Interact with Notion",
+            "hint": "tasks, docs, search",
+            "execution_type": "backend",
+            "execution_url": "https://your-backend.com/api/v1/cliq/command"
+        },
+        {
+            "type": "widget",
+            "unique_name": "notion_dashboard",
+            "name": "Notion Dashboard",
+            "description": "View your Notion stats",
+            "location": "right_panel",
+            "url": "https://your-frontend.com/dashboard"
+        }
+    ]
+}
