@@ -1,0 +1,30 @@
+// Extension_Handler/callback.deluge
+
+// Arguments: code, state
+code = options.get("code");
+state = options.get("state"); // This is the user_id we passed
+
+if (code == null) {
+    return {"text": "Error: No code received from Notion."};
+}
+
+// Exchange code for token
+token_response = thisapp.Functions.oauth.exchangeCode(code);
+
+if (token_response.get("access_token") != null) {
+    access_token = token_response.get("access_token");
+    workspace_id = token_response.get("workspace_id");
+    
+    // Store token
+    // In a real app, use Zoho Persistence or External DB
+    // storage.put("notion_token_" + state, access_token);
+    
+    // For now, we just print it (DO NOT DO THIS IN PROD) or return success
+    return {
+        "text": "Successfully connected to Notion workspace: " + token_response.get("workspace_name")
+    };
+} else {
+    return {
+        "text": "Error exchanging token: " + token_response.toString()
+    };
+}

@@ -1,0 +1,44 @@
+// Message_Actions/save_to_notion.deluge
+
+// Incoming message details
+message = options.get("message");
+content = message.get("content");
+sender = message.get("sender");
+user_id = user.get("id");
+
+token = thisapp.Functions.utils.getNotionToken(user_id);
+
+// For MVP, we'll just create a new page in a default database or as a standalone page
+// Ideally, we'd pop up a modal to ask WHERE to save it.
+
+// Let's assume we open a form to ask for details
+inputs = List();
+inputs.add({
+    "name": "page_title",
+    "label": "Page Title",
+    "value": "Note from " + sender.get("first_name"),
+    "mandatory": true,
+    "type": "text"
+});
+inputs.add({
+    "name": "content",
+    "label": "Content",
+    "value": content,
+    "type": "textarea",
+    "mandatory": true
+});
+
+form = {
+    "type": "form",
+    "title": "Save to Notion",
+    "name": "save_message_form",
+    "actions": {
+        "submit": {
+            "type": "invoke.function",
+            "name": "submit_task_function" // Reusing the task submitter for now, or create a new one
+        }
+    },
+    "inputs": inputs
+};
+
+return form;

@@ -1,0 +1,15 @@
+// Schedulers/sync.deluge
+
+// This script runs every X minutes
+// It checks for updates in subscribed databases
+
+// 1. Get all subscriptions (from DB)
+// 2. For each subscription:
+//    last_synced_time = subscription.get("last_synced");
+//    response = thisapp.Functions.notion_api.queryDatabase(db_id, token, filter_by_date);
+//    if response has new items:
+//       notify_channel();
+//       update_last_synced_time();
+
+info "Sync scheduler ran at " + zoho.currenttime;
+return;

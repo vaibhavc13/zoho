@@ -1,0 +1,43 @@
+// Functions/oauth.deluge
+
+// Configuration
+// In a real app, these should be stored in Extension Params or Secrets
+client_id = "YOUR_NOTION_CLIENT_ID";
+client_secret = "YOUR_NOTION_CLIENT_SECRET";
+redirect_uri = "https://cliq.zoho.com/api/v2/extensions/notion_integration/callback"; // Example URL
+
+string getAuthUrl(string state) {
+    base_url = "https://api.notion.com/v1/oauth/authorize";
+    url = base_url + "?client_id=" + client_id + "&response_type=code&owner=user&redirect_uri=" + zoho.encryption.urlEncode(redirect_uri) + "&state=" + state;
+    return url;
+}
+
+map exchangeCode(string code) {
+    url = "https://api.notion.com/v1/oauth/token";
+    
+    // Basic Auth header for token endpoint
+    auth_string = zoho.encryption.base64Encode(client_id + ":" + client_secret);
+    
+    headers = Map();
+    headers.put("Authorization", "Basic " + auth_string);
+    headers.put("Content-Type", "application/json");
+    
+    payload = Map();
+    payload.put("grant_type", "authorization_code");
+    payload.put("code", code);
+    payload.put("redirect_uri", redirect_uri);
+    
+    response = invokeurl
+    [
+        url : url
+        type : POST
+        parameters : payload.toString()
+        headers : headers
+    ];
+    
+    return response;
+}
+
+// Notion Access Tokens don't expire for public integrations usually, 
+// but if they did, we'd need a refresh function.
+// For now, we just return the access_token.

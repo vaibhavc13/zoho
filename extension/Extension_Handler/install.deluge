@@ -1,0 +1,14 @@
+// Extension_Handler/install.deluge
+
+// This handler is called when the user clicks "Connect" or runs an install command
+// We generate a state to track the user (e.g., user_id)
+user_id = user.get("id");
+state = user_id; // Simple state for MVP
+
+auth_url = thisapp.Functions.oauth.getAuthUrl(state);
+
+return {
+    "type": "open.url",
+    "web": auth_url,
+    "target": "new_window" // or "modal" if supported
+};
