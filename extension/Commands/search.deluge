@@ -1,0 +1,83 @@
+// Commands/search.deluge
+
+// Incoming arguments from Cliq
+// command_name, text, user, channel, etc.
+
+query = options.get("text");
+user_id = user.get("id");
+
+token = thisapp.Functions.utils.getNotionToken(user_id);
+
+if (token == null || token == "") {
+    return {
+        "text": "Please configure your Notion integration first."
+    };
+}
+
+search_results = thisapp.Functions.notion_api.search(query, token);
+
+if (search_results.get("results").size() == 0) {
+    return {
+        "text": "No results found for '" + query + "'."
+    };
+}
+
+// Format results into a list of cards or a text list
+rows = List();
+for each result in search_results.get("results") {
+    title = "Untitled";
+    icon = "📄";
+    
+    if (result.get("object") == "database") {
+        icon = "🗃️";
+        if (result.get("title").size() > 0) {
+            title = result.get("title").get(0).get("plain_text");
+        }
+    } else if (result.get("object") == "page") {
+        // Extract title from properties (this varies by DB schema, simplified here)
+        // Usually "Name" or "title" property
+        props = result.get("properties");
+        // Simple heuristic to find title property
+        keys = props.keys();
+        for each key in keys {
+            prop = props.get(key);
+            if (prop.get("id") == "title") {
+                if (prop.get("title").size() > 0) {
+                    title = prop.get("title").get(0).get("plain_text");
+                }
+            }
+        }
+    }
+    
+    url = result.get("url");
+    
+    row = Map();
+    row.put("title", icon + " " + title);
+    row.put("description", "Last edited: " + result.get("last_edited_time"));
+    row.put("action", {
+        "type": "open.url",
+        "data": {
+            "web": url
+        }
+    });
+    
+    rows.add(row);
+}
+
+// Return a card response
+response = Map();
+response.put("text", "Found " + search_results.get("results").size() + " results for '" + query + "':");
+response.put("card", {
+    "theme": "modern-inline",
+    "title": "Notion Search Results",
+    "thumbnail": "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png"
+});
+response.put("slides", {
+    {
+        "type": "list",
+        "title": "",
+        "data": rows
+    }
+});
+
+return response;

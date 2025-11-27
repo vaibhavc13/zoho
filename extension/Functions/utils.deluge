@@ -1,0 +1,21 @@
+// Functions/utils.deluge
+
+string getNotionToken(string userId) {
+    // TODO: Implement actual token storage retrieval
+    // This could be from Zoho Persistence or an external DB
+    // For MVP, we might return a hardcoded token or fetch from a secure param
+    
+    // Example: Fetch from Extension params
+    // token = zoho.cliq.getExtensionParam("notion_token");
+    
+    // Placeholder
+    return "secret_placeholder_token";
+}
+
+map formatCliqCard(map notionResult) {
+    // Helper to format a Notion page/db result into a Cliq card element
+    card = Map();
+    card.put("title", notionResult.get("properties").get("Name").get("title").get(0).get("plain_text"));
+    card.put("description", "Last edited: " + notionResult.get("last_edited_time"));
+    return card;
+}

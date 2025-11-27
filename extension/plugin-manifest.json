@@ -25,9 +25,16 @@
             "unique_name": "notion",
             "name": "notion",
             "description": "Interact with Notion",
-            "hint": "tasks, docs, search",
-            "execution_type": "backend",
-            "execution_url": "https://your-backend.com/api/v1/cliq/command"
+            "hint": "search <query>, create-task, subscribe",
+            "execution_type": "deluge",
+            "execution_handler": "Commands/router.deluge"
+        },
+        {
+            "type": "message_action",
+            "unique_name": "save_to_notion",
+            "name": "Save to Notion",
+            "execution_type": "deluge",
+            "execution_handler": "Message_Actions/save_to_notion.deluge"
         },
         {
             "type": "widget",
@@ -35,7 +42,7 @@
             "name": "Notion Dashboard",
             "description": "View your Notion stats",
             "location": "right_panel",
-            "url": "https://your-frontend.com/dashboard"
+            "url": "/widgets/home.html"
         }
     ]
 }

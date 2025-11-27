@@ -1,0 +1,60 @@
+// Functions/submit_task.deluge
+
+// form arguments
+values = form.get("values");
+task_name = values.get("task_name");
+database_id = values.get("database_id");
+priority = values.get("priority").get("value");
+user_id = user.get("id");
+
+token = thisapp.Functions.utils.getNotionToken(user_id);
+
+// Construct Notion Page Object
+// Note: This assumes the DB has "Name" and "Priority" properties.
+// In a real app, you'd fetch the schema first.
+
+properties = Map();
+
+// Title
+title_entry = Map();
+title_text = Map();
+title_text.put("content", task_name);
+title_entry.put("text", title_text);
+title_list = List();
+title_list.add(title_entry);
+
+name_prop = Map();
+name_prop.put("title", title_list);
+properties.put("Name", name_prop);
+
+// Priority (Select)
+if (priority != null) {
+    select_opt = Map();
+    select_opt.put("name", priority);
+    prio_prop = Map();
+    prio_prop.put("select", select_opt);
+    properties.put("Priority", prio_prop);
+}
+
+parent = Map();
+parent.put("database_id", database_id);
+
+pageData = Map();
+pageData.put("parent", parent);
+pageData.put("properties", properties);
+
+response = thisapp.Functions.notion_api.createPage(pageData, token);
+
+if (response.get("object") == "error") {
+    return {
+        "type": "banner",
+        "text": "Error creating task: " + response.get("message"),
+        "status": "failure"
+    };
+}
+
+return {
+    "type": "banner",
+    "text": "Task created successfully! [Open in Notion](" + response.get("url") + ")",
+    "status": "success"
+};

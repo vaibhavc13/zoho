@@ -1,0 +1,37 @@
+// Extension_Handler/webhook.deluge
+
+// Incoming webhook payload from Notion
+// This assumes we have set up a webhook in Notion (or an intermediate service)
+// pointing to this Zoho Function URL.
+
+payload = zoho.request.get("body"); // pseudo-code for getting body
+// Verify signature if applicable
+
+// Parse event
+// Notion doesn't have native webhooks for everything yet, but let's assume standard structure
+// or that we are using a polling service that pushes here.
+
+event_type = payload.get("type"); // e.g., "page_updated"
+data = payload.get("data");
+
+if (event_type == "page_updated" || event_type == "page_created") {
+    page_id = data.get("id");
+    url = data.get("url");
+    
+    // Notify a specific channel
+    // In a real app, we'd look up which channel subscribed to this page/db
+    channel_unique_name = "general"; 
+    
+    message = Map();
+    message.put("text", "Notion Update: Page modified");
+    
+    card = Map();
+    card.put("title", "Page Updated");
+    card.put("theme", "modern-inline");
+    
+    // ... build card details ...
+    
+    zoho.cliq.postToChannel(channel_unique_name, message);
+}
+
+return {"status": "200 OK"};

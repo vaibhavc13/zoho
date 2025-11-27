@@ -1,0 +1,50 @@
+// Commands/create_task.deluge
+
+// This command opens a form
+inputs = List();
+
+inputs.add({
+    "name": "task_name",
+    "label": "Task Name",
+    "placeholder": "Buy groceries",
+    "min_length": "1",
+    "max_length": "100",
+    "mandatory": true,
+    "type": "text"
+});
+
+inputs.add({
+    "name": "database_id",
+    "label": "Database ID",
+    "placeholder": "Paste your Database ID here",
+    "mandatory": true,
+    "type": "text"
+});
+
+inputs.add({
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "options": {
+        {"label": "High", "value": "High"},
+        {"label": "Medium", "value": "Medium"},
+        {"label": "Low", "value": "Low"}
+    }
+});
+
+form = {
+    "type": "form",
+    "title": "Create Notion Task",
+    "hint": "Add a new item to your database",
+    "name": "create_task_form",
+    "version": 1,
+    "actions": {
+        "submit": {
+            "type": "invoke.function",
+            "name": "submit_task_function" // This needs to be a separate function handler
+        }
+    },
+    "inputs": inputs
+};
+
+return form;
